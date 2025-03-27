@@ -14,5 +14,7 @@ typedef struct Player {
 } Player;
 
 void init_player(Player* player);
+void rotate_player(Player* player, int cw_sense);
+void move_player(Player* player, int forward_direction);
 
 #endif

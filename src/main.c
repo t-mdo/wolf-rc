@@ -33,15 +33,29 @@ int main(void) {
 
   while (!stopped) {
     while (SDL_PollEvent(&e)) {
-      if (e.type == SDL_QUIT) {
+      switch (e.type) {
+      case SDL_QUIT:
         stopped = 1;
+        break;
+      case SDL_KEYDOWN:
+        if (e.key.keysym.sym == SDLK_ESCAPE) {
+          stopped = 1;
+        }
+        if (e.key.keysym.sym == SDLK_d) {
+          rotate_player(&player, 1);
+        }
+        if (e.key.keysym.sym == SDLK_a) {
+          rotate_player(&player, 0);
+        }
+        if (e.key.keysym.sym == SDLK_w) {
+          move_player(&player, 1);
+        }
+        if (e.key.keysym.sym == SDLK_s) {
+          move_player(&player, 0);
+        }
       }
-      if (e.type == SDL_KEYDOWN) {
-      }
-      if (e.type == SDL_MOUSEBUTTONDOWN) {
-      }
+      display(&app, &player, map);
     }
-    display(&app, &player, map);
   }
   return 0;
 }
