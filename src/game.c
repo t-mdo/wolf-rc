@@ -2,8 +2,8 @@
 #include <math.h>
 
 void init_player(Player *player) {
-  player->position.x = MAP_SIZE / 2.0f;
-  player->position.y = MAP_SIZE / 2.0f;
+  player->position.x = 8.5;
+  player->position.y = 8.5;
   player->view_angle = M_PI / 2;
 }
 

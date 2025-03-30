@@ -1,14 +1,12 @@
 #include "display.h"
+#include "minimap.h"
 #include <SDL2/SDL.h>
 #include <math.h>
 
 void draw_ceiling_and_floor(App *app) {
-  SDL_Rect ceiling = {
-      .x = 0, .y = 0, .w = WINDOW_WIDTH, .h = WINDOW_HEIGHT / 2};
-  SDL_Rect floor = {.x = 0,
-                    .y = WINDOW_HEIGHT / 2,
-                    .w = WINDOW_WIDTH,
-                    .h = WINDOW_HEIGHT / 2};
+  SDL_Rect ceiling = {.x = 0, .y = 0, .w = W_RESOLUTION, .h = H_RESOLUTION / 2};
+  SDL_Rect floor = {
+      .x = 0, .y = H_RESOLUTION / 2, .w = W_RESOLUTION, .h = H_RESOLUTION / 2};
 
   SDL_SetRenderDrawColor(app->renderer, CEILING_COLOR_R, CEILING_COLOR_G,
                          CEILING_COLOR_B, 255);
@@ -18,7 +16,7 @@ void draw_ceiling_and_floor(App *app) {
   SDL_RenderFillRect(app->renderer, &floor);
 }
 
-float get_wall_distance(Player *player, char map[MAP_SIZE][MAP_SIZE],
+float trace_ray_to_wall(Player *player, char map[MAP_SIZE][MAP_SIZE],
                         float angle) {
   const float step_size = 0.1f;
   int x;
@@ -44,8 +42,8 @@ float get_wall_distance(Player *player, char map[MAP_SIZE][MAP_SIZE],
 }
 
 void draw_wall_column(App *app, int column_index, float distance) {
-  int wall_size = WINDOW_HEIGHT / distance;
-  int start_y = WINDOW_HEIGHT / 2 - wall_size / 2;
+  int wall_size = H_RESOLUTION / distance;
+  int start_y = H_RESOLUTION / 2 - wall_size / 2;
 
   SDL_Rect wall = {.x = column_index, .y = start_y, .w = 1, .h = wall_size};
   SDL_SetRenderDrawColor(app->renderer, WALL_COLOR_R, WALL_COLOR_G,
@@ -60,7 +58,7 @@ void draw_walls(App *app, Player *player, char map[MAP_SIZE][MAP_SIZE]) {
 
   for (int i = 0; i < W_RESOLUTION; i++) {
     theta = player->view_angle - (float)FOV_ANGLE / 2 + i * increment;
-    distance = get_wall_distance(player, map, theta);
+    distance = trace_ray_to_wall(player, map, theta);
     // printf("distance %f\n", distance);
     draw_wall_column(app, i, distance);
   }
@@ -69,6 +67,7 @@ void draw_walls(App *app, Player *player, char map[MAP_SIZE][MAP_SIZE]) {
 void display(App *app, Player *player, char map[MAP_SIZE][MAP_SIZE]) {
   draw_ceiling_and_floor(app);
   draw_walls(app, player, map);
+  draw_minimap(app, player, map);
   SDL_RenderPresent(app->renderer);
   SDL_Delay(16);
 }
