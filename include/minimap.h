@@ -3,6 +3,7 @@
 
 #include "app.h"
 #include "game.h"
+#include "display.h"
 
 # define MINIMAP_SIZE 224
 # define MINIMAP_CELL_SIZE MINIMAP_SIZE / MAP_SIZE

@@ -57,4 +57,29 @@ void draw_minimap(App *app, Player *player, char map[MAP_SIZE][MAP_SIZE]) {
                                    .h = PLAYER_SQUARE_SIZE,
                                    .w = PLAYER_SQUARE_SIZE};
   SDL_RenderFillRect(app->renderer, &player_position_rect);
+
+  // FOV
+  SDL_SetRenderDrawColor(app->renderer, 200, 20, 20, 172);
+
+  float fov_angle_1 = player->view_angle - FOV_ANGLE / 2;
+  float fov_angle_2 = player->view_angle + FOV_ANGLE / 2;
+
+  printf("%f %f %f\n", player->view_angle, fov_angle_1, fov_angle_2);
+  SDL_Point fov_points[3] = {{
+                                 .x = x_rect_player_position +
+                                      cos(fov_angle_1) * MINIMAP_CELL_SIZE * 4,
+                                 .y = y_rect_player_position +
+                                      sin(fov_angle_1) * MINIMAP_CELL_SIZE * 4,
+                             },
+                             {
+                                 .x = x_rect_player_position,
+                                 .y = y_rect_player_position,
+                             },
+                             {
+                                 .x = x_rect_player_position +
+                                      cos(fov_angle_2) * MINIMAP_CELL_SIZE * 4,
+                                 .y = y_rect_player_position +
+                                      sin(fov_angle_2) * MINIMAP_CELL_SIZE * 4,
+                             }};
+  SDL_RenderDrawLines(app->renderer, fov_points, 3);
 }
