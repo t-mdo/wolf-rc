@@ -24,40 +24,34 @@ float trace_ray_to_wall(Player *player, char map[MAP_SIZE][MAP_SIZE],
   float x = player->position.x;
   float y = player->position.y;
 
-  int hit = 0;
-  float distance_to_wall = 0;
+  int map_x = (int)x;
+  int map_y = (int)y;
 
-  while (!hit) {
-    // printf("cos: %f, sin: %f\n", cos_angle, sin_angle);
-    float dist_x = cos_angle >= 0 ? (int)x + 1 - x : (int)x - 1 + x;
-    float dist_y = sin_angle >= 0 ? (int)y + 1 - y : (int)y - 1 + y;
+  int step_x = (cos_angle >= 0) ? 1 : -1;
+  int step_y = (sin_angle >= 0) ? 1 : -1;
 
-    float ray_dist_v = fabs(cos_angle != 0 ? dist_x / cos_angle : MAXFLOAT);
-    float ray_dist_h = fabs(sin_angle != 0 ? dist_y / sin_angle : MAXFLOAT);
+  float delta_dist_x = fabs(1.0f / cos_angle);
+  float delta_dist_y = fabs(1.0f / sin_angle);
 
-    /*printf("dist_x: %f, dist_y: %f, ray_dist_v: %f, ray_dist_h: %f\n", dist_x,
-           dist_y, ray_dist_v, ray_dist_h);*/
+  float side_dist_x = (step_x > 0) ? ((int)(x + 1) - x) * delta_dist_x
+                                   : (x - (int)x) * delta_dist_x;
+  float side_dist_y = (step_y > 0) ? ((int)(y + 1) - y) * delta_dist_y
+                                   : (y - (int)y) * delta_dist_y;
 
-    if (ray_dist_h < ray_dist_v) {
-      x = x + cos_angle * ray_dist_h;
-      y = sin_angle >= 0 ? (int)y + 1 : (int)y;
-      distance_to_wall += ray_dist_h;
-      // printf("horizontal - x: %f, y: %f\n", x, y);
-      if (map[(int)y][(int)x] == 1) {
-        hit = 1;
-      }
+  while (side_dist_x < MAX_RAY_DIST || side_dist_y < MAX_RAY_DIST) {
+    if (side_dist_x < side_dist_y) {
+      map_x += step_x;
+      if (map[map_y][map_x] == 1)
+        return side_dist_x;
+      side_dist_x += delta_dist_x;
     } else {
-      x = cos_angle >= 0 ? (int)x + 1 : (int)x;
-      y = y + sin_angle * ray_dist_v;
-      distance_to_wall += ray_dist_v;
-      // printf("vertical - x: %f, y: %f\n", x, y);
-      if (map[(int)y][(int)x] == 1) {
-        hit = 1;
-      }
+      map_y += step_y;
+      if (map[map_y][map_x] == 1)
+        return side_dist_y;
+      side_dist_y += delta_dist_y;
     }
   }
-
-  return distance_to_wall;
+  return MAX_RAY_DIST;
 }
 
 void draw_wall_column(App *app, int column_index, float distance) {

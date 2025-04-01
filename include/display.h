@@ -15,6 +15,7 @@
 # define WALL_COLOR_G 80
 # define WALL_COLOR_B 80
 
+# define MAX_RAY_DIST 256
 # define FOV_ANGLE (M_PI / 3) // 60 degrees
 # define W_RESOLUTION WINDOW_WIDTH
 # define H_RESOLUTION WINDOW_HEIGHT
