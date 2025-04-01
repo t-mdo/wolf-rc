@@ -11,10 +11,9 @@ LIBS = SDL2
 
 $(OUT): $(OBJ)
 	$(CC) $(CFLAGS) $^ -o $@ -l$(LIBS) -L$(SDL_LIB_DIR)
-	rm -rf $(OBJ)
 
 %.o: %.c
-	$(CC) -c $< -o $@ -I$(SDL_INCLUDE_DIR) -I$(INCLUDE_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@ -I$(SDL_INCLUDE_DIR) -I$(INCLUDE_DIR)
 
 clean:
 	rm -f $(OUT) $(OBJ)
